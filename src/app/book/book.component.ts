@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BookService } from './book.service';
 
 @Component({
@@ -6,9 +6,11 @@ import { BookService } from './book.service';
   templateUrl: './book.component.html',
   styleUrls: ['./book.component.css']
 })
-export class BookComponent {
+export class BookComponent implements OnInit {
 
     count: number;
+
+    name: string;
 
     constructor(private bookService: BookService) { }
 
@@ -18,6 +20,17 @@ export class BookComponent {
                 this.count = data;
             });
         }
+
+    getBookName() {
+        this.bookService.getBookName()
+            .subscribe((data: string) => {
+                    this.name = data;
+            });
+        }
+
+    displayName() {
+        this.name = null;
+    }
 
     ngOnInit() {
         this.getBooksCount();
