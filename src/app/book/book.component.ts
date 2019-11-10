@@ -1,16 +1,23 @@
-import { Component, OnInit } from '@angular/core';
-import { BookService } from './book.service';
+import { Component, OnInit, Input } from '@angular/core';
+import { BookService } from '../service/book.service';
+import { Book } from '../model/book.model'
 
 @Component({
-  selector: 'book',
-  templateUrl: './book.component.html',
-  styleUrls: ['./book.component.css']
+    selector: 'book',
+    templateUrl: './book.component.html',
+    styleUrls: ['./book.component.css']
 })
+
+
 export class BookComponent implements OnInit {
+
+    @Input() id: number;
 
     count: number;
 
     name: string;
+
+    book: Book;
 
     constructor(private bookService: BookService) { }
 
@@ -19,20 +26,32 @@ export class BookComponent implements OnInit {
             .subscribe((data: number) => {
                 this.count = data;
             });
-        }
+    }
 
     getBookName() {
         this.bookService.getBookName()
             .subscribe((data: string) => {
-                    this.name = data;
+                this.name = data;
             });
-        }
+    }
 
     displayName() {
         this.name = null;
     }
 
+    getBookInfo(id) {
+        this.bookService.getBookInfo(id)
+            .subscribe((data: Book) => {
+                this.book = data;
+            });
+    }
+
+    onKey(event: any) { 
+        this.id =  event.target.value;
+        this.getBookInfo(this.id);
+      }
+
     ngOnInit() {
         this.getBooksCount();
-      }
+    }
 }

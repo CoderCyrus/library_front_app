@@ -6,7 +6,7 @@ import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
 import { BookComponent } from './book/book.component';
-import { BookService } from './book/book.service';
+import { BookService } from './service/book.service';
 
 @NgModule({
   declarations: [
