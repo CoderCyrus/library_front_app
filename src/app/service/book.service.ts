@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Book } from '../model/book.model';
-
+import 'core-js/es/reflect';
 @Injectable()
 export class BookService {
 
@@ -9,9 +9,11 @@ export class BookService {
 
   booksCountUrl = 'http://localhost:8080/muruo/count';
 
-  bookNameUrl = 'http://localhost:8080/muruo/find/name?id=2';
+  bookNameUrl = 'http://localhost:8080/muruo/find/name?id=1';
 
   bookInfourl = 'http://localhost:8080/muruo/find?id=';
+
+  bookNotBorrowed = 'http://localhost:8080/muruo/notborrowed';
 
 
 
@@ -25,6 +27,11 @@ export class BookService {
 
   getBookInfo(id) {
     return this.http.get<Book>(this.bookInfourl + id);
+  }
+
+  // return a list of book not borrowed
+  getBookNotBorrowed(){
+    return this.http.get<[Book]>(this.bookNotBorrowed);
   }
 
 }

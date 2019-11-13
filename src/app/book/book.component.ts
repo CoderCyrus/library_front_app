@@ -19,6 +19,8 @@ export class BookComponent implements OnInit {
 
     book: Book;
 
+    books : Book[];
+
     constructor(private bookService: BookService) { }
 
     getBooksCount() {
@@ -46,12 +48,20 @@ export class BookComponent implements OnInit {
             });
     }
 
-    onKey(event: any) { 
-        this.id =  event.target.value;
+    getBookNotBorrowed() {
+        this.bookService.getBookNotBorrowed()
+            .subscribe((data: Book[]) => {
+                this.books = data;
+            });
+    }
+
+    onKey(event: any) {
+        this.id = event.target.value;
         this.getBookInfo(this.id);
-      }
+    }
 
     ngOnInit() {
         this.getBooksCount();
+        this.getBookNotBorrowed();
     }
 }

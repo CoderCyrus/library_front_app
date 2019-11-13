@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import 'core-js/es/reflect';
 
 @Component({
   selector: 'app-root',

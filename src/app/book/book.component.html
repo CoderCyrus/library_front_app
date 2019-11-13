@@ -7,7 +7,7 @@
 </div>
 <div class="container-fluid" style="background-color:rgb(54, 143, 244);color:#fff;height:200px;">
     <h1>Welcome to the library research part</h1>
-    ID:<input (ngModel)="id" (keyup)="onKey($event)" class="form-control"/>
+    ID:<input (ngModel)="id" (keyup)="onKey($event)" class="form-control" />
     <div class="row">
         <div class="col-sm-12" style="background-color:lavenderblush;">
             <p>Name : {{ book.name }}</p>
@@ -16,3 +16,10 @@
             <p>Description : {{ book.description }}</p>
         </div>
     </div>
+</div>
+<h2>Books not borrowed</h2>
+<ul class="Book">
+    <li *ngFor="let book of books">
+        <span class="badge">{{book.id}}</span>{{book.name}} Description: {{book.description}}
+    </li>
+</ul>
