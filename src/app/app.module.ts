@@ -5,20 +5,23 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { HttpClientModule } from '@angular/common/http';
-import { BookComponent } from './book/book.component';
-import { BookService } from './service/book.service';
+import { SystemtreeComponent } from './systemtree/systemtree.component';
+import { SystemtreeService } from './service/systemtree.service';
+import { ClickComponent } from './click/click.component';
+import { D3Service } from './service/d3.service';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BookComponent
+    SystemtreeComponent,
+    ClickComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpClientModule
   ],
-  providers: [BookService],
+  providers: [SystemtreeService,D3Service],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
