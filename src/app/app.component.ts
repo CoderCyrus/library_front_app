@@ -7,5 +7,5 @@ import 'core-js/es/reflect';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'library-app';
+  title = 'LIGER';
 }
