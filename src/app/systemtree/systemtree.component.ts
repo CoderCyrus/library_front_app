@@ -31,6 +31,7 @@ export class SystemtreeComponent implements OnInit {
     async getSystemtree() {
         // this.systemtreeService.getSystemtree()
         // .subscribe((data: Systemtree[]) => {
+         //   console.log
         //     this.systemtrees = data;
         // });  
         return await this.systemtreeService.getSystemtree().toPromise().then((data) => { this.systemtrees=data });
