@@ -1,6 +1,12 @@
-.background {
-    max-width: 100%;
+.centered {
+    width: 100%;
+    display: flex;
     height: auto;
-    font: 10px sans-serife;
-    margin: 5px;
+    align-items: center; /* vertical */
+    justify-content: center; /* horizontal */
+    padding: 5px;
+}
+
+.graph {
+    width: 900px;
 }

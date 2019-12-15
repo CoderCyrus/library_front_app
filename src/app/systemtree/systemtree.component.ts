@@ -1,15 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { SystemtreeService } from '../service/systemtree.service';
-import { Systemtree } from '../model/systemtree.model';
 
 
 import * as d3Scale from 'd3-scale';
 import * as d3Shape from 'd3-shape';
 import * as d3 from 'd3';
 import * as d3Hierarchy from 'd3-hierarchy';
-import { StaticInfo } from '../model/staticInfo.model';
+import { AbstractTreeNode } from '../model/abstractTreeNode.model';
+import { Systemtree } from '../model/systemtree.model';
 import { Metric } from '../model/metric.model';
+import { HttpData } from '../model/httpData.model';
 import { D3Service } from '../service/d3.service';
+import { D3Service2 } from '../service/d3_2.service';
+
 
 
 
@@ -23,20 +26,15 @@ import { D3Service } from '../service/d3.service';
 export class SystemtreeComponent implements OnInit {
 
     // list of systemtree
-    systemtrees : Systemtree[];
+    systemtrees : AbstractTreeNode[];
 
-    constructor(private systemtreeService: SystemtreeService, private d3Service: D3Service) { 
-    }
+    constructor(private systemtreeService: SystemtreeService, private d3Service: D3Service,
+        private d3Service2: D3Service2) { }
     
     async getSystemtree() {
-        // this.systemtreeService.getSystemtree()
-        // .subscribe((data: Systemtree[]) => {
-         //   console.log
-        //     this.systemtrees = data;
-        // });  
-        return await this.systemtreeService.getSystemtree().toPromise().then((data) => { this.systemtrees=data });
-        
-                  
+        return await this.systemtreeService.getSystemtree().toPromise().then((data) => { 
+            this.systemtrees = HttpData.toSingleList(data.listSystems, data.listMetrics) 
+        });                   
     }
 
     onKey() {
@@ -44,11 +42,8 @@ export class SystemtreeComponent implements OnInit {
 
     async ngOnInit() {
         await this.getSystemtree();
-        console.log(this.systemtrees);
-         this.d3Service.drawSunburst(this.systemtrees);
-        // const root = this.d3Service.createTree(this.systemtrees)
-        // console.log(root);
-     // this.d3Service.drawCircle();
+        // console.log(this.systemtrees);
+        this.d3Service2.drawSunburst(this.systemtrees);
     }
 
 }
