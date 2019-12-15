@@ -12,7 +12,6 @@ export class D3Service2 {
     grey = "rgb(110,110,110)";
 
     color(node: d3.HierarchyRectangularNode<AbstractTreeNode>): string {
-        console.log(node.data instanceof Systemtree);
         if (node.data instanceof Systemtree) {
             return node.data.nbIssues === 0 ? this.green : this.red;
         } else { // instanceof Metric
@@ -21,6 +20,19 @@ export class D3Service2 {
                 case 1: { return this.green }
                 case 2: { return this.red }
                 default: { return this.grey } // typically -1
+            }
+        }
+    }
+
+    displayName(d: d3.HierarchyRectangularNode<AbstractTreeNode>): string {
+        if (d.data instanceof Systemtree && d.data.instance_name != null) {
+                return d.data.instance_name;
+        } else { // Remove s_ or m_ at the beginning of the name
+            let name = d.data.name;
+            if (name.slice(0,2) === "s_" || name.slice(0, 2) === "m_") {
+                return name.slice(2);
+            } else {
+                return name;
             }
         }
     }
@@ -129,8 +141,9 @@ export class D3Service2 {
 
         path.append("title")
             .text((d: d3.HierarchyRectangularNode<AbstractTreeNode>) => {
-                return `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.value)}`
+                return `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.data.nbIssues)} issues`
             });
+        console.log("path :", path);
 
         const label = g.append("g")
             .attr("pointer-events", "none")
@@ -142,7 +155,9 @@ export class D3Service2 {
             .attr("dy", "0.35em")
             .attr("fill-opacity", (d: any) => +labelVisible(d.current))
             .attr("transform", (d: any) => labelTransform.bind(this)(d.current))
-            .text((d: d3.HierarchyRectangularNode<AbstractTreeNode>) => d.data.name);
+            .text((d: d3.HierarchyRectangularNode<AbstractTreeNode>) => this.displayName(d))
+                
+        console.log("label :", label);
 
         const parent = g.append("circle")
             .datum(root)
