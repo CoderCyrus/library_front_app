@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import * as d3 from 'd3';
 import { AbstractTreeNode } from '../model/abstractTreeNode.model';
 import { Systemtree } from '../model/systemtree.model';
+import { Metric } from '../model/metric.model';
 
 @Injectable()
 export class D3Service2 {
@@ -44,7 +45,7 @@ export class D3Service2 {
             .endAngle((d: any) => {return d.x1})
             .padAngle((d: any) => Math.min((d.x1 - d.x0) / 2, 0.005))
             .padRadius(this.radius * 1.5)
-            .innerRadius((d: any) => d.y0 * this.radius)
+            .innerRadius((d: any) => d.y0 * this.radius )
             .outerRadius((d: any) => Math.max(d.y0 * this.radius, d.y1 * this.radius - 1));
 
         function arcVisible(d) {
@@ -66,7 +67,7 @@ export class D3Service2 {
             .id(function (d: AbstractTreeNode) { return d.id_node.toString() })
             .parentId(function (d: AbstractTreeNode) { if (d.id_parent == null) { return ""; } else { return d.id_parent.toString() } })
             (table)
-            .sum(function (d: AbstractTreeNode) { return 1 })
+            .count()
             .sort(function (a: d3.HierarchyNode<AbstractTreeNode>, b: d3.HierarchyNode<AbstractTreeNode>) { return (a.data.name <= b.data.name ? -1:1) });
 
         const root = d3.partition()
@@ -118,6 +119,30 @@ export class D3Service2 {
                 .attrTween("transform", (d: any) => () => labelTransform.bind(this)(d.current));
         }
 
+        // Callback to display info about the system
+        function mouseover(d:d3.HierarchyRectangularNode<AbstractTreeNode>) {
+            d3.select("#pSystemInfo")
+                .html(displaySystemInfo(d));
+        }
+
+        // Returns the formatted (for html) version of the info of d
+        var displaySystemInfo = (d: d3.HierarchyRectangularNode<AbstractTreeNode>) => {
+            let res = [];
+            if (d.data instanceof Systemtree) {
+                let data = <Systemtree> d.data;
+                res.push(this.displayName(d) + " (System)");
+                data.listStaticInfo.forEach((info) => (res.push(info.name + ": " + info.value)))
+                res.push("nbIssues: " + data.nbIssues);
+            } else { // Metric
+                let data = <Metric> d.data;
+                res.push(this.displayName(d) + " (Metric)");
+                res.push("value: " + data.threshMax);
+                res.push("threshMin: " + data.threshMin);
+                res.push("threshMax: " + data.threshMax);
+            }
+            return res.join("<br />");
+        }
+
         // Display the diagram
         const svg = d3.select("svg")
             .attr("viewBox", `0, 0, ${this.width}, ${this.width}`)
@@ -135,15 +160,19 @@ export class D3Service2 {
             .attr("fill-opacity", (d: any) => arcVisible(d.current) ? (d.children ? 0.6 : 0.4) : 0)
             .attr("d", (d: any) => arc(d.current));
 
+        // Add callback to zoom when clicking on a system
         path.filter((d: any) => d.children)
             .style("cursor", "pointer")
-            .on("click", clicked.bind(this));
+            .on("click", clicked.bind(this))
+
+        // Add callback to display system info when mouseover
+        path.filter((d:any) => true)
+            .on("mouseover", (d: d3.HierarchyRectangularNode<AbstractTreeNode>) => {mouseover(d)});
 
         path.append("title")
             .text((d: d3.HierarchyRectangularNode<AbstractTreeNode>) => {
                 return `${d.ancestors().map(d => d.data.name).reverse().join("/")}\n${format(d.data.nbIssues)} issues`
             });
-        console.log("path :", path);
 
         const label = g.append("g")
             .attr("pointer-events", "none")
@@ -157,7 +186,6 @@ export class D3Service2 {
             .attr("transform", (d: any) => labelTransform.bind(this)(d.current))
             .text((d: d3.HierarchyRectangularNode<AbstractTreeNode>) => this.displayName(d))
                 
-        console.log("label :", label);
 
         const parent = g.append("circle")
             .datum(root)
@@ -165,6 +193,5 @@ export class D3Service2 {
             .attr("fill", "none")
             .attr("pointer-events", "all")
             .on("click", clicked.bind(this));
-
     }
 }

@@ -3,10 +3,16 @@
     display: flex;
     height: auto;
     align-items: center; /* vertical */
-    justify-content: center; /* horizontal */
+    justify-content: space-around; /* horizontal */
     padding: 5px;
 }
 
 .graph {
+    display: inline-block;
     width: 900px;
+}
+
+.systemInfo {
+    display: inline-block;
+    width: 200px;
 }
